@@ -8,9 +8,24 @@ Ngày thực hiện: 29/10/2026 (UTC+7).
 - Bổ sung kiểm tra địa chỉ gửi, host/port, mật khẩu bắt buộc, TLS, che mật khẩu trong chuỗi chẩn đoán, không dùng Pickup ngoài Development và từ chối tên mode sai trước khi kết nối.
 - Windows PowerShell 5.1: script UTF-8 có BOM, không có lỗi parse; đã thử lưu/đọc credential DPAPI và khôi phục biến môi trường bằng credential giả.
 - Kết nối Gmail 587 STARTTLS và 465 SSL/TLS đã thực hiện được, không bỏ kiểm tra chứng chỉ.
-- Gửi Gmail thật hiện chưa thành công: máy chủ trả `5.7.9 Application-specific password required` tại bước xác thực. Chờ người sở hữu tài khoản tạo và lưu mật khẩu ứng dụng hợp lệ; chưa ghi nhận thư đã gửi/đã đến hộp thư.
+- Gmail thật đã đạt sau khi người dùng tạo mật khẩu ứng dụng hợp lệ. Gmail chấp nhận thư thử và người nhận xác nhận đã nhận. Lỗi 5.7.9 ban đầu đã được xử lý, không còn là blocker.
 - Công cụ Test-Smtp dùng EmailSender thật và chỉ chạy khi người dùng cung cấp người nhận; không mở endpoint gửi thư trên web.
 - Toàn bộ tiến độ hiện tại và các task còn chờ được theo dõi trong [README chính](../../README.md#tien-do). Nội dung 14 test phía dưới là bằng chứng của lượt triển khai trước.
+
+## Nghiệm thu email nghiệp vụ thật
+
+Người dùng đã cho phép tạo riêng một tài khoản Tutor thử bằng Gmail alias của hộp nhận để không đổi tài khoản GS hiện có. Toàn bộ thao tác chạy trên SQL Server của dự án và SMTP Gmail thật.
+
+| Kiểm chứng | Kết quả |
+| --- | --- |
+| Email xác nhận đăng ký | Người nhận đã mở link và thấy xác nhận thành công |
+| Đăng nhập sau xác nhận | HTTP thực đăng nhập thành công |
+| Upload hồ sơ, quyền hiển thị | Lưu được; khách nhận 404 khi Pending |
+| Admin duyệt | Cập nhật thành công; khách nhận 200 khi Approved |
+| Email kết quả duyệt | Người nhận xác nhận đã nhận |
+| Email đặt lại mật khẩu | Người nhận mở link, đặt mật khẩu mới và xác nhận đăng nhập thành công |
+
+Mật khẩu và token không được ghi trong bằng chứng. Tệp [kết quả đã loại thông tin nhạy cảm](../evidence/sprint-01/smtp-check.json) lưu các trạng thái kiểm chứng, phân biệt phần HTTP tự động với phần người dùng xác nhận. Các email này dùng chính AccountController/ProfilesController và EmailSender của ứng dụng, không chỉ gửi một thư độc lập.
 
 ## Kiểm chứng đã thực hiện
 
@@ -43,7 +58,7 @@ Kiểm thử tích hợp dùng SQLite in-memory riêng cho từng test, HTTP qua
 
 Kết quả máy đọc TRX lưu tại `tests/GiaSuOnline.IntegrationTests/TestResults/sprint1-final.trx` (Git bỏ qua); mã test được lưu cùng dự án.
 
-## Kịch bản nghiệm thu thủ công cần nhóm thực hiện
+## Kịch bản để tái hiện và nghiệm thu bổ sung
 
 | Mã | Thao tác | Kỳ vọng |
 | --- | --- | --- |
@@ -60,7 +75,7 @@ Kết quả máy đọc TRX lưu tại `tests/GiaSuOnline.IntegrationTests/TestR
 
 ## Giới hạn và việc chưa xác nhận
 
-- Chưa có SMTP của nhóm nên chưa chứng minh thư đến hộp thư bên ngoài; Pickup chỉ là chế độ học/thử trên máy.
+- SMTP Gmail đã được kiểm chứng gửi/nhận thật; Pickup vẫn là lựa chọn để thử offline.
 - Trình duyệt trong Codex báo ERR_CERT_AUTHORITY_INVALID dù chứng chỉ đã được Windows trust. Không bỏ qua cảnh báo; chưa kiểm tra trực quan bằng trình duyệt tự động. HTTP tích hợp và kiểm chứng SQL thật đã chạy với xác thực chứng chỉ của Windows/Python.
 - Chưa có kiểm thử trình duyệt tự động cho stepper, preview ảnh hoặc kích thước màn hình. Cần MAN04 trên Edge/Chrome của nhóm.
 - HSTS bật ngoài Development theo thông lệ ASP.NET Core, chưa triển khai host Production để đo header tại đó.

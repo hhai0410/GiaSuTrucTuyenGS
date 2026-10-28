@@ -2,7 +2,7 @@
 
 Dự án học phần **Phát triển dự án Công nghệ thông tin**, Nhóm 8. GS kết nối học viên với gia sư, quản lý hồ sơ và kiểm duyệt; các sprint tiếp theo bổ sung đặt lịch, thanh toán và học trực tuyến.
 
-**Cập nhật: 29/10/2026 (UTC+7). Đang hoàn thiện Sprint 1.** Đây là nơi theo dõi tiến độ và hướng dẫn cấu hình chính của repository. Không cần Trello để chạy ứng dụng; nhóm chọn theo dõi tại README.
+**Cập nhật: 29/10/2026 (UTC+7). Đã hoàn thiện chức năng lõi và SMTP Sprint 1; chờ nhóm nghiệm thu cuối.** Đây là nơi theo dõi tiến độ và hướng dẫn cấu hình chính của repository. Không cần Trello để chạy ứng dụng; nhóm chọn theo dõi tại README.
 
 - [Chạy trên máy](#chay-du-an)
 - [Cấu hình Gmail SMTP](#smtp)
@@ -140,7 +140,7 @@ Cả thư mục `.local/` đã bị Git bỏ qua. Không chia sẻ cả tệp đ
 
 ### 3.4. Gửi một thư kiểm tra
 
-Sau khi build thành công và trước khi khởi động web:
+Sau khi build thành công và trước khi khởi động web (thư kiểm tra và ba email nghiệp vụ đã được xác minh trên máy nhóm ngày 29/10/2026):
 
 ```powershell
 # Thay địa chỉ mẫu bằng hộp thư nhận bạn cho phép.
@@ -184,7 +184,7 @@ Bộ kiểm thử dùng SQLite in-memory và email giả lập, không xóa data
 
 | Giai đoạn | Kế hoạch | Phạm vi | Trạng thái |
 | --- | --- | --- | --- |
-| Sprint 1 | 26/10–13/11/2026 | US01, US02, US03, US04, US06, US19 | Đã triển khai lõi, đang hoàn thiện email thật và nghiệm thu |
+| Sprint 1 | 26/10–13/11/2026 | US01, US02, US03, US04, US06, US19 | Đã triển khai và kiểm chứng email thật; chờ nhóm nghiệm thu cuối |
 | Sprint 2 | 16/11–04/12/2026 | US05, US07, US08, US09: tìm kiếm/lọc, lịch rảnh, đặt và xác nhận | Chưa triển khai nghiệp vụ; mục tiêu phát hành V1.0 |
 | Sprint 3 | 07/12–25/12/2026 | US12, US14, US20: thanh toán sandbox, video, UAT/triển khai | Chưa triển khai; mục tiêu phát hành V2.0 |
 | Mở rộng | Chưa cam kết | US10, US11, US13, US15–US18 | Chỉ làm khi được nhóm đưa vào phạm vi |
@@ -192,9 +192,9 @@ Bộ kiểm thử dùng SQLite in-memory và email giả lập, không xóa data
 ### Kết quả và việc còn chờ
 
 - Đã áp dụng migration vào `LOQ\SQLEXPRESS / GiaSuOnlineGS`; đã seed ba vai trò và sáu môn học.
-- Luồng SQL Server thật đã chạy: đăng ký → email Pickup → xác nhận → tạo hồ sơ → admin duyệt → khách xem. Chưa coi kiểm thử Pickup là bằng chứng SMTP thật.
+- Luồng SQL Server thật đã chạy với **Gmail SMTP**: đăng ký tài khoản thử riêng → người dùng mở email xác nhận → đăng nhập → tạo hồ sơ → admin duyệt → khách xem. Người dùng đã nhận email duyệt, mở email đặt lại mật khẩu, đổi mật khẩu và đăng nhập lại thành công.
 - Bộ kiểm thử mở rộng: **21/21 đạt**, gồm 14 ca lõi và 7 ca cấu hình email/TLS, từ chối cấu hình sai và chặn Pickup ngoài Development.
-- Gmail: đã bổ sung cấu hình kín, lưu DPAPI và công cụ gửi thư thử. Kết nối TLS tới Gmail thành công; lần xác thực hiện tại bị Gmail từ chối với mã `5.7.9 Application-specific password required`. Đang chờ nhập mật khẩu ứng dụng hợp lệ; chưa gửi thư thành công.
+- Gmail SMTP: **đã cấu hình, xác thực TLS và gửi/nhận thành công**. Đã nhận thư kiểm tra và đủ ba email nghiệp vụ (xác nhận tài khoản, kết quả duyệt, đặt lại mật khẩu). Lỗi `5.7.9` ban đầu đã được khắc phục bằng mật khẩu ứng dụng hợp lệ. Mật khẩu chỉ lưu mã hóa trên máy, không ở GitHub.
 - GitHub CLI: đã kiểm tra đăng nhập thành công ngày 29/10/2026. Mã Sprint 1 có trên `main`. Cập nhật cấu hình SMTP và README thực hiện bằng commit trực tiếp vào `main` theo xác nhận của chủ repository; chưa có PR/review độc lập của thành viên khác.
 - Trello/Jira: bỏ qua theo lựa chọn nhóm; tiến độ thể hiện tại README này.
 - Còn chờ nhóm thử giao diện trên desktop/mobile, review/acceptance, Sprint Review/Retrospective. Không tạo biên bản hoặc ghi giờ công giả.
@@ -206,12 +206,12 @@ Nguồn: `docs/Nhom8_Scrum_GiaSuOnline.xlsx`, sheet `Sprint backlog 1`, tổng 1
 | Task | Công việc | Trạng thái thực tế | Bằng chứng / giới hạn |
 | --- | --- | --- | --- |
 | T01.1 | Thiết kế CSDL người dùng | Đã triển khai, đã áp dụng SQL Server | Identity, unique email; migration; seed Student/Tutor/Admin; ERD |
-| T01.2 | Xử lý đăng ký (Controller/Service) | Đã triển khai; đang xác minh Gmail thật | AccountController, Identity, EmailSender; đã thử email Pickup |
+| T01.2 | Xử lý đăng ký (Controller/Service) | Đã triển khai và xác minh Gmail thật | AccountController, Identity, EmailSender; Gmail thật đã nhận và mở link xác nhận thành công |
 | T01.3 | Giao diện đăng ký | Đã triển khai; chờ nhóm xem giao diện | Views/Account/Register.cshtml, Bootstrap, validation server và HTML |
 | T01.4 | Kiểm thử đăng ký | Đã kiểm thử tự động | RegistrationHashesPasswordSeedsRolesAndSendsConfirmation; RegistrationRejectsInvalidInputs |
 | T01.5 | Review code & merge | Chưa hoàn tất quy trình | Mã có trên main, build và kiểm thử đạt; chưa có PR/review của thành viên khác |
 | T02.1 | Đăng nhập / đăng xuất | Đã triển khai và kiểm thử | AccountController; khóa 5 lần/15 phút; logout đổi security stamp |
-| T02.2 | Quên / đặt lại mật khẩu | Đã triển khai và kiểm thử; đang xác minh Gmail thật | Identity token 30 phút; token đã dùng/hết hạn bị từ chối |
+| T02.2 | Quên / đặt lại mật khẩu | Đã triển khai và kiểm thử; Gmail thật đã đạt | Identity token 30 phút; kiểm thử dùng lại/hết hạn đạt; người dùng đã reset qua Gmail và đăng nhập bằng mật khẩu mới |
 | T02.3 | Giao diện đăng nhập & quên mật khẩu | Đã triển khai; chờ nhóm xem giao diện | Login, EmailForm, ResetPassword, Message |
 | T02.4 | Kiểm thử đăng nhập | Đã kiểm thử tự động | LockoutAfterFiveFailuresForFifteenMinutes; ResetTokenSingleUseAndInvalidatesOldPassword; ExpiredResetTokenRejected |
 | T02.5 | Review code & merge | Chưa hoàn tất quy trình | Mã Sprint 1 đã có commit trên main; chưa có PR và review độc lập |
@@ -229,7 +229,7 @@ Nguồn: `docs/Nhom8_Scrum_GiaSuOnline.xlsx`, sheet `Sprint backlog 1`, tổng 1
 | T04.1 | Trạng thái hồ sơ gia sư | Đã triển khai, đã áp dụng SQL Server | ProfileStatus Pending/Approved/Rejected, RejectionReason và Revision |
 | T04.2 | Trang admin danh sách chờ duyệt | Đã triển khai; chờ nhóm xem giao diện | Admin/Profiles: lọc trạng thái, danh sách, chi tiết và tải chứng chỉ |
 | T04.3 | Chức năng duyệt / từ chối | Đã triển khai và kiểm thử | Moderate kiểm tra Pending/Revision, từ chối bắt buộc lý do; chống duyệt hồ sơ đã đổi |
-| T04.4 | Email kết quả duyệt | Đã triển khai; đang xác minh Gmail thật | EmailSender MailKit dùng chung, báo lỗi SMTP rõ ràng và có nút gửi lại |
+| T04.4 | Email kết quả duyệt | Đã triển khai và xác minh Gmail thật | EmailSender MailKit dùng chung; Gmail thật đã nhận email duyệt; có báo lỗi và nút gửi lại khi cần |
 | T04.5 | Kiểm thử duyệt hồ sơ | Đã kiểm thử tự động và thử SQL Server | Luồng pending→reject→resubmit→approve; pending không công khai |
 | T06.1 | Giao diện trang chi tiết gia sư | Đã triển khai; phần booking giới hạn Sprint 1 | Trang chi tiết và nút Đặt lịch dẫn tới trang khung giờ; chưa tạo booking Sprint 2 |
 | T06.2 | Dữ liệu đánh giá và lịch rảnh tóm tắt | Đã triển khai phần đọc; chưa có chức năng tạo dữ liệu | Truy vấn 5 đánh giá gần nhất và slot trống 7 ngày tới; trạng thái rỗng trung thực; tạo lịch/đánh giá theo sprint sau |

@@ -1,0 +1,34 @@
+{
+  "result": "PASS",
+  "database": "SQL Server",
+  "emailMode": "Smtp Gmail",
+  "profileId": 4,
+  "checks": [
+    "real registration confirmation consumed by user",
+    "login successful",
+    "upload accepted",
+    "pending profile 404",
+    "admin approval successful",
+    "approved profile 200",
+    "approval email accepted",
+    "password reset email accepted"
+  ],
+  "date": "2026-10-29",
+  "timezone": "Asia/Bangkok",
+  "automatedTests": {
+    "passed": 21,
+    "failed": 0
+  },
+  "userConfirmed": {
+    "smtpCheckEmailReceived": true,
+    "registrationEmailReceivedAndConfirmed": true,
+    "approvalEmailReceived": true,
+    "passwordResetEmailReceived": true,
+    "passwordChangedAndLoginSuccessful": true
+  },
+  "notCovered": [
+    "independent teammate code review",
+    "mobile layout acceptance",
+    "Sprint Review/Retrospective meeting"
+  ]
+}
