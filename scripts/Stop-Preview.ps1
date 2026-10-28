@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path $PSScriptRoot -Parent
 $pidFile = Join-Path $projectRoot '.local/web.pid'
 if (!(Test-Path -LiteralPath $pidFile)) { Write-Host 'Không có bản xem thử chạy nền được ghi nhận.'; return }

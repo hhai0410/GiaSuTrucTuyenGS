@@ -39,6 +39,32 @@ builder.Services.AddScoped<UploadStore>(); builder.Services.AddScoped<ProfileSer
 builder.Services.AddHsts(o => { o.MaxAge = TimeSpan.FromDays(365); o.IncludeSubDomains = true; });
 builder.Services.AddHttpsRedirection(o => { o.HttpsPort = 7043; o.RedirectStatusCode = 308; });
 var app = builder.Build();
+// Kiểm tra SMTP theo yêu cầu rõ ràng từ dòng lệnh, không mở endpoint gửi thư công khai.
+if (builder.Configuration.GetValue<bool>("SmtpCheck"))
+{
+    if (builder.Configuration["Email:Mode"] != "Smtp")
+        throw new InvalidOperationException("Kiểm tra này cần Email:Mode=Smtp, không dùng thư thử Pickup.");
+    var recipient = builder.Configuration["SmtpCheckRecipient"];
+    if (string.IsNullOrWhiteSpace(recipient)) throw new InvalidOperationException("Chưa có địa chỉ nhận thư thử.");
+    try
+    {
+        using var scope = app.Services.CreateScope();
+        await scope.ServiceProvider.GetRequiredService<IEmailSender>().SendAsync(recipient,
+            "GS – Kiểm tra cấu hình SMTP Sprint 1",
+            "Đây là thư kiểm tra được gửi theo yêu cầu của nhóm dự án GS.\nNếu đọc được thư này, hãy xác nhận với nhóm rằng hộp thư đã nhận được.\nThời điểm gửi (UTC): " + DateTimeOffset.UtcNow.ToString("O"));
+        Console.WriteLine("Máy chủ SMTP đã chấp nhận thư thử. Hãy kiểm tra Hộp thư đến/Spam để xác nhận đã nhận.");
+    }
+    catch (Exception ex)
+    {
+        Console.Error.WriteLine($"Gửi thư thử thất bại ({ex.GetType().Name}). Kiểm tra tài khoản, mật khẩu ứng dụng, SMTP và kết nối mạng.");
+        var detail = ex.Message;
+        if (builder.Configuration["Email:Password"] is { Length: > 0 } secret)
+            detail = detail.Replace(secret, "[đã ẩn]");
+        Console.Error.WriteLine(detail);
+        Environment.ExitCode = 1;
+    }
+    return;
+}
 app.UseExceptionHandler("/Home/Error");
 if (!app.Environment.IsDevelopment()) app.UseHsts();
 app.UseHttpsRedirection();

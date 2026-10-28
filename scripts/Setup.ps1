@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path $PSScriptRoot -Parent
 Set-Location -LiteralPath $projectRoot
 if (!(Test-Path '.tools/dotnet/dotnet.exe') -and !(Get-Command dotnet -ErrorAction SilentlyContinue)) {

@@ -1,7 +1,4 @@
-using System.Net;
-using System.Text;
 using MailKit.Net.Smtp;
-using MailKit.Security;
 using MimeKit;
 namespace GiaSuOnline.Web.Integrations.Email;
 public interface IEmailSender { Task SendAsync(string to, string subject, string body); }
@@ -9,12 +6,15 @@ public class EmailSender(IConfiguration config, IWebHostEnvironment env) : IEmai
 {
     public async Task SendAsync(string to, string subject, string body)
     {
+        var mode = config["Email:Mode"] ?? "Smtp";
+        if (mode != "Smtp" && mode != "Pickup") throw new InvalidOperationException("Email:Mode phải là Smtp hoặc Pickup.");
+        var settings = mode == "Smtp" ? SmtpSettings.Load(config) : null;
         var message = new MimeMessage();
-        message.From.Add(MailboxAddress.Parse(config["Email:From"] is { Length: > 0 } from ? from : "gs@localhost.test"));
+        message.From.Add(settings?.From ?? MailboxAddress.Parse("gs@localhost.test"));
         message.To.Add(MailboxAddress.Parse(to));
         message.Subject = subject;
         message.Body = new TextPart("plain") { Text = body };
-        if (config["Email:Mode"] == "Pickup")
+        if (mode == "Pickup")
         {
             if (!env.IsDevelopment()) throw new InvalidOperationException("Pickup email chỉ được phép trong Development.");
             var dir = Path.Combine(env.ContentRootPath, "App_Data", "mail");
@@ -24,14 +24,18 @@ public class EmailSender(IConfiguration config, IWebHostEnvironment env) : IEmai
             await File.WriteAllTextAsync(Path.Combine(dir, name + ".txt"), $"Người nhận: {to}\nTiêu đề: {subject}\n\n{body}");
             return;
         }
-        var host = config["Email:Host"];
-        if (string.IsNullOrWhiteSpace(host)) throw new InvalidOperationException("Chưa cấu hình máy chủ SMTP.");
-        using var smtp = new SmtpClient();
-        await smtp.ConnectAsync(host, config.GetValue("Email:Port", 587),
-            config.GetValue("Email:UseStartTls", true) ? SecureSocketOptions.StartTls : SecureSocketOptions.SslOnConnect);
-        if (!string.IsNullOrWhiteSpace(config["Email:Username"]))
-            await smtp.AuthenticateAsync(config["Email:Username"]!, config["Email:Password"] ?? throw new InvalidOperationException("Thiếu mật khẩu SMTP."));
+        using var smtp = new SmtpClient { Timeout = 15000 };
+        void Progress(string text) { if (config.GetValue<bool>("SmtpCheck")) Console.WriteLine("SMTP: " + text); }
+        Progress("Đang kết nối và thiết lập TLS...");
+        await smtp.ConnectAsync(settings!.Host, settings.Port, settings.Security);
+        Progress("TLS đã thiết lập. Đang xác thực tài khoản...");
+        await smtp.AuthenticateAsync(settings.Username, settings.Password);
+        Progress("Đã xác thực. Đang gửi thư thử...");
         await smtp.SendAsync(message);
-        await smtp.DisconnectAsync(true);
+        Progress("Máy chủ đã chấp nhận thư.");
+        // Thư đã được chấp nhận; lỗi đóng kết nối sau đó không được báo là gửi thất bại.
+        try { await smtp.DisconnectAsync(true); }
+        catch (IOException) { }
+        catch (MailKit.Net.Smtp.SmtpProtocolException) { }
     }
 }

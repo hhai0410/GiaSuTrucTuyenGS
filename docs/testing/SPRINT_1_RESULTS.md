@@ -2,6 +2,16 @@
 
 Ngày thực hiện: 29/10/2026 (UTC+7).
 
+## Bổ sung cấu hình SMTP (29/10/2026)
+
+- Bộ kiểm thử mở rộng: **21/21 đạt**, gồm 14 trường hợp lõi và 7 trường hợp cấu hình email. TRX: `tests/GiaSuOnline.IntegrationTests/TestResults/sprint1-smtp.trx` (không commit).
+- Bổ sung kiểm tra địa chỉ gửi, host/port, mật khẩu bắt buộc, TLS, che mật khẩu trong chuỗi chẩn đoán, không dùng Pickup ngoài Development và từ chối tên mode sai trước khi kết nối.
+- Windows PowerShell 5.1: script UTF-8 có BOM, không có lỗi parse; đã thử lưu/đọc credential DPAPI và khôi phục biến môi trường bằng credential giả.
+- Kết nối Gmail 587 STARTTLS và 465 SSL/TLS đã thực hiện được, không bỏ kiểm tra chứng chỉ.
+- Gửi Gmail thật hiện chưa thành công: máy chủ trả `5.7.9 Application-specific password required` tại bước xác thực. Chờ người sở hữu tài khoản tạo và lưu mật khẩu ứng dụng hợp lệ; chưa ghi nhận thư đã gửi/đã đến hộp thư.
+- Công cụ Test-Smtp dùng EmailSender thật và chỉ chạy khi người dùng cung cấp người nhận; không mở endpoint gửi thư trên web.
+- Toàn bộ tiến độ hiện tại và các task còn chờ được theo dõi trong [README chính](../../README.md#tien-do). Nội dung 14 test phía dưới là bằng chứng của lượt triển khai trước.
+
 ## Kiểm chứng đã thực hiện
 
 - Build dự án web và project kiểm thử thành công trên .NET SDK 10.0.403. Lượt cuối: 14/14 test đạt, 0 thất bại, không có test bỏ qua.
