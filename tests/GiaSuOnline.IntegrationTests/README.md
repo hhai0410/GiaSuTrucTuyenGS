@@ -1,5 +1,3 @@
 # GiaSuOnline.IntegrationTests
 
-Dự kiến kiểm thử phối hợp web–Identity–EF Core–CSDL, đặc biệt đặt cùng slot đồng thời và callback thanh toán trùng. Cần CSDL riêng cho kiểm thử.
-
-Đây là thư mục khung; README này giải thích mục đích và giúp Git lưu lại thư mục khi chưa có mã nguồn.
+Đã triển khai mã Sprint 1. Đọc README gốc, docs/user-guide/GETTING_STARTED.md và docs/scrum/sprint-01/STATUS.md để biết cách chạy và giới hạn nghiệm thu.

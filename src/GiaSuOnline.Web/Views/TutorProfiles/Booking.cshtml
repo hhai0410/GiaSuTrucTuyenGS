@@ -1,0 +1,3 @@
+@model TutorDetail
+@{ViewData["Title"]="Chọn khung giờ";}
+<section class="detail-panel"><h1>Chọn khung giờ với @Model.Profile.User.FullName</h1><p>Lịch rảnh 7 ngày tới (UTC+7):</p>@if(Model.Slots.Count==0){<p>Chưa có khung giờ để chọn.</p>}else{@foreach(var slot in Model.Slots){<p>@slot.StartsAtUtc.AddHours(7).ToString("dd/MM HH:mm") – @slot.EndsAtUtc.AddHours(7).ToString("HH:mm")</p>}}<div class="alert alert-info">Chức năng xác nhận đặt lịch được triển khai trong Sprint 2. Hiện chưa tạo yêu cầu đặt lịch.</div><a asp-action="Details" asp-route-id="@Model.Profile.Id">Quay lại hồ sơ</a></section>

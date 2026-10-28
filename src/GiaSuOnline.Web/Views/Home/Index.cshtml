@@ -1,0 +1,6 @@
+@model List<TutorProfile>
+@{ViewData["Title"]="Học cùng người dẫn đường phù hợp";}
+<section class="hero"><p class="eyebrow">HỌC CHỦ ĐỘNG · TIẾN BỘ MỖI NGÀY</p><h1>Một người thầy phù hợp.<br/>Một hành trình mới.</h1><p>Khám phá hồ sơ gia sư đã được kiểm duyệt và tìm người đồng hành cùng bạn.</p><a class="btn btn-primary" asp-controller="Account" asp-action="Register">Bắt đầu cùng GS</a></section>
+<div class="section-heading"><h2>Gia sư đã được kiểm duyệt</h2><span>@Model.Count hồ sơ hiển thị</span></div>
+@if(Model.Count==0){<div class="empty"><h3>Những kết nối đầu tiên bắt đầu từ đây</h3><p>Chưa có hồ sơ công khai. Gia sư có thể đăng ký, hoàn thiện hồ sơ và gửi quản trị viên duyệt.</p></div>}
+<div class="cards">@foreach(var p in Model){<article class="card tutor-card"><img src="@Url.Action("Photo","TutorProfiles",new{id=p.Id})" alt="Ảnh gia sư @p.User.FullName"/><div class="card-body"><span class="badge text-bg-success">Đã kiểm duyệt</span><h3>@p.User.FullName</h3><p>@string.Join(" · ",p.Subjects.Select(x=>x.Subject.Name))</p><p>@p.ExperienceYears năm kinh nghiệm</p><strong>@p.HourlyRate.ToString("N0") đ / giờ</strong><a class="btn btn-outline-primary" asp-controller="TutorProfiles" asp-action="Details" asp-route-id="@p.Id">Xem hồ sơ</a></div></article>}</div>

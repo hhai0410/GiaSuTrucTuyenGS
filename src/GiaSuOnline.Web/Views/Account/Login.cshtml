@@ -1,0 +1,6 @@
+@model LoginForm
+@{ViewData["Title"]="Đăng nhập";}
+<section class="form-panel"><p class="eyebrow">TIẾP TỤC HÀNH TRÌNH</p><h1>Đăng nhập GS</h1><form method="post"><div asp-validation-summary="All" class="text-danger" role="alert"></div><input asp-for="ReturnUrl" type="hidden"/>
+<label asp-for="Email"></label><input asp-for="Email" class="form-control" autocomplete="username" required/>
+<label asp-for="Password"></label><input asp-for="Password" class="form-control" autocomplete="current-password" required/>
+<button class="btn btn-primary" type="submit">Đăng nhập</button></form><p><a asp-action="ForgotPassword">Quên mật khẩu?</a> · <a asp-action="ResendConfirmation">Gửi lại email xác nhận</a></p></section>

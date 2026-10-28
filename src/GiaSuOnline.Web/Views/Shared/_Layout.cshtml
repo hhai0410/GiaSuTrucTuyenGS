@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>@ViewData["Title"] · GS</title><link rel="stylesheet" href="~/css/bootstrap.min.css"/><link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/></head>
+<body><header><nav class="container nav"><a class="brand" asp-area="" asp-controller="Home" asp-action="Index">GS<span>Gia sư trực tuyến</span></a><div class="navlinks">
+@if(User.Identity?.IsAuthenticated == true){
+@if(User.IsInRole("Tutor")){<a asp-area="" asp-controller="TutorProfiles" asp-action="Mine">Hồ sơ của tôi</a>}
+@if(User.IsInRole("Admin")){<a asp-area="Admin" asp-controller="Profiles" asp-action="Index">Kiểm duyệt</a>}
+<form asp-area="" asp-controller="Account" asp-action="Logout" method="post"><button class="btn btn-outline-secondary" type="submit">Đăng xuất</button></form>
+}else{<a asp-area="" asp-controller="Account" asp-action="Login">Đăng nhập</a><a class="btn btn-primary" asp-area="" asp-controller="Account" asp-action="Register">Tạo tài khoản</a>}
+</div></nav></header><main class="container main">
+@if(TempData["Success"] is string success){<div class="alert alert-success" role="status">@success</div>}
+@if(TempData["Warning"] is string warning){<div class="alert alert-warning" role="alert">@warning</div>}
+@RenderBody()</main><footer class="container">GS · Kết nối tri thức, mở lối tương lai · Sprint 1</footer><script src="~/js/site.js" asp-append-version="true" defer></script></body></html>

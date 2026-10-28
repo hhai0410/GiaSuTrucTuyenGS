@@ -29,3 +29,6 @@ storage/private-uploads/*
 ~$*
 Thumbs.db
 .DS_Store
+.tools/
+.local/
+**/App_Data/

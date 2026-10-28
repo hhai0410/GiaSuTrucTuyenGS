@@ -1,0 +1,9 @@
+@model RegisterForm
+@{ViewData["Title"]="Tạo tài khoản";}
+<section class="form-panel"><p class="eyebrow">CHÀO MỪNG ĐẾN GS</p><h1>Tạo tài khoản</h1><p>Chọn vai trò để bắt đầu hành trình của bạn.</p><form method="post"><div asp-validation-summary="All" class="text-danger" role="alert"></div>
+<label asp-for="FullName"></label><input asp-for="FullName" class="form-control" autocomplete="name" required maxlength="100"/>
+<label asp-for="Email"></label><input asp-for="Email" class="form-control" autocomplete="email" required/>
+<label asp-for="Role"></label><select asp-for="Role" class="form-select"><option value="Student">Học viên</option><option value="Tutor">Gia sư</option></select>
+<label asp-for="Password"></label><input asp-for="Password" class="form-control" autocomplete="new-password" minlength="8" required/>
+<label asp-for="ConfirmPassword"></label><input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" required/>
+<button class="btn btn-primary" type="submit">Tạo tài khoản và nhận email xác nhận</button></form><a asp-action="Login">Đã có tài khoản? Đăng nhập</a></section>

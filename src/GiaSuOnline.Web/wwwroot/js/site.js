@@ -1,0 +1,8 @@
+"use strict";
+const form=document.querySelector("[data-stepper]");
+if(form){const steps=[...form.querySelectorAll("[data-step]")],prev=form.querySelector("[data-prev]"),next=form.querySelector("[data-next]"),save=form.querySelector("[data-save]");let index=0;
+function show(){steps.forEach((s,i)=>s.hidden=i!==index);prev.hidden=index===0;next.hidden=index===steps.length-1;save.hidden=index!==steps.length-1;const summary=document.querySelector("#profile-summary");if(summary)summary.textContent=`Học phí: ${form.HourlyRate.value} VNĐ/giờ · Kinh nghiệm: ${form.ExperienceYears.value} năm`;}
+next.addEventListener("click",()=>{for(const field of steps[index].querySelectorAll("input,textarea,select")){if(!field.reportValidity())return;}index++;show();});prev.addEventListener("click",()=>{index--;show();});
+form.addEventListener("submit",e=>{for(let i=0;i<steps.length;i++){for(const field of steps[i].querySelectorAll("input,textarea,select")){if(!field.checkValidity()){e.preventDefault();index=i;show();field.reportValidity();return;}}}});form.noValidate=true;show();
+for(const input of form.querySelectorAll('input[type="file"]'))input.addEventListener("change",()=>{input.setCustomValidity(input.files[0]?.size>5*1024*1024?"Tệp không được vượt quá 5 MB.":"");input.reportValidity();});
+const photo=form.querySelector("[data-photo]"),preview=document.querySelector("#photo-preview");let imageUrl;photo?.addEventListener("change",()=>{if(imageUrl)URL.revokeObjectURL(imageUrl);const file=photo.files[0];if(file&&file.type.startsWith("image/")&&file.size<=5*1024*1024){imageUrl=URL.createObjectURL(file);preview.src=imageUrl;preview.hidden=false;}else preview.hidden=true;});}
