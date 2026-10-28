@@ -1,0 +1,31 @@
+# Build .NET và IDE
+**/bin/
+**/obj/
+.vs/
+*.user
+*.suo
+TestResults/
+**/coverage/
+
+# Gói giao diện và đầu ra sinh tự động
+node_modules/
+
+# Bí mật và cấu hình cục bộ
+.env
+.env.*
+!.env.example
+**/appsettings.Local.json
+**/appsettings.*.Local.json
+*.pfx
+*.p12
+*.key
+
+# Dữ liệu và nhật ký khi chạy
+*.log
+storage/private-uploads/*
+!storage/private-uploads/README.md
+
+# Tệp tạm Office và hệ điều hành
+~$*
+Thumbs.db
+.DS_Store
