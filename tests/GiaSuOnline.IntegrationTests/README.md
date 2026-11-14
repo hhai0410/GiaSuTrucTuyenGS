@@ -1,3 +1,5 @@
 # GiaSuOnline.IntegrationTests
 
-Đã triển khai mã Sprint 1. Đọc README gốc, docs/user-guide/GETTING_STARTED.md và docs/scrum/sprint-01/STATUS.md để biết cách chạy và giới hạn nghiệm thu.
+Hồi quy 38 test khi bật SQL Server: 21 test Sprint 1/email và 17 test Sprint 2, gồm kiểm thử đồng thời/nâng cấp dữ liệu thật.
+
+Xem [README chính](../../README.md#sprint2) để chạy và kiểm tra. Không có SQL Server thì hai test dành cho SQL Server được báo Skip.

@@ -1,3 +1,5 @@
 # GiaSuOnline.Web
 
-Đã triển khai mã Sprint 1. Đọc README gốc, docs/user-guide/GETTING_STARTED.md và docs/scrum/sprint-01/STATUS.md để biết cách chạy và giới hạn nghiệm thu.
+Ứng dụng ASP.NET Core MVC: tài khoản, hồ sơ, tìm kiếm, lịch rảnh và booking.
+
+Xem [README chính](../../README.md#sprint2) để chạy và kiểm tra. Không có SQL Server thì hai test dành cho SQL Server được báo Skip.

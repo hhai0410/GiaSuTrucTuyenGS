@@ -1,0 +1,5 @@
+@model List<Booking>
+@{ViewData["Title"]="Lịch đã đặt";}
+<p class="eyebrow">GÓC HỌC VIÊN</p><h1>Lịch đã đặt</h1><p>Các yêu cầu đặt lịch của bạn, hiển thị theo giờ Việt Nam (UTC+7).</p><a asp-controller="Tutors" asp-action="Index" class="btn btn-primary">Tìm gia sư</a>
+@if(Model.Count==0){<div class="empty">Bạn chưa có yêu cầu đặt lịch nào.</div>}
+<div class="table-responsive"><table class="table"><thead><tr><th>Mã</th><th>Gia sư</th><th>Buổi học</th><th>Học phí</th><th>Trạng thái</th><th></th></tr></thead><tbody>@foreach(var booking in Model){<tr><td>#@booking.Id</td><td>@booking.TutorProfile.User.FullName</td><td>@VietnamTime.Format(booking.StartsAtUtc)</td><td>@booking.Amount.ToString("N0") đ</td><td>@VietnamTime.Status(booking.Status)</td><td><a asp-action="Details" asp-route-id="@booking.Id">Chi tiết</a></td></tr>}</tbody></table></div>

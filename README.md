@@ -1,9 +1,10 @@
 # GS – Web đặt lịch học gia sư online
 
-Dự án học phần **Phát triển dự án Công nghệ thông tin**, Nhóm 8. GS kết nối học viên với gia sư, quản lý hồ sơ và kiểm duyệt; các sprint tiếp theo bổ sung đặt lịch, thanh toán và học trực tuyến.
+Dự án học phần **Phát triển dự án Công nghệ thông tin**, Nhóm 8. GS kết nối học viên với gia sư: tài khoản/hồ sơ/kiểm duyệt (Sprint 1), tìm kiếm/lịch rảnh/đặt lịch/xác nhận (Sprint 2). Thanh toán và học video thuộc Sprint 3.
 
-**Cập nhật: 29/10/2026 (UTC+7). Đã hoàn thiện chức năng lõi và SMTP Sprint 1; chờ nhóm nghiệm thu cuối.** Đây là nơi theo dõi tiến độ và hướng dẫn cấu hình chính của repository. Không cần Trello để chạy ứng dụng; nhóm chọn theo dõi tại README.
+**Cập nhật: 15/11/2026 (UTC+7). Sprint 1 và chức năng lõi Sprint 2 đã triển khai; hồi quy 38/38 đạt, chờ nhóm nghiệm thu phát hành V1.0.** Đây là nơi theo dõi tiến độ và hướng dẫn cấu hình chính của repository. Không cần Trello để chạy ứng dụng; nhóm chọn theo dõi tại README.
 
+- [Sprint 2: cách thử và tiến độ 22 task](#sprint2)
 - [Chạy trên máy](#chay-du-an)
 - [Cấu hình Gmail SMTP](#smtp)
 - [Thử các chức năng](#thu-chuc-nang)
@@ -91,7 +92,7 @@ Nhập email quản trị mới và mật khẩu khi được hỏi. Không dùn
 powershell -ExecutionPolicy Bypass -File .\scripts\Start.ps1 -Sqlite -PickupEmail -CreateAdmin
 ```
 
-SQLite lưu riêng tại `src/GiaSuOnline.Web/App_Data/gs-dev.db`, không tự đồng bộ sang SQL Server. Chế độ này dùng EnsureCreated để tạo schema demo; migration trong repository dành cho SQL Server.
+SQLite lưu riêng tại `src/GiaSuOnline.Web/App_Data/gs-dev-v1.db`, không tự đồng bộ sang SQL Server. Chế độ này dùng EnsureCreated để tạo schema demo; migration trong repository dành cho SQL Server.
 
 <a id="smtp"></a>
 ## 3. Cấu hình Gmail SMTP
@@ -164,7 +165,7 @@ Không dùng tệp DPAPI của một máy cho máy chủ khác. Ứng dụng h�
 
 Nếu dùng Pickup, mở tệp `.txt` mới nhất trong `src/GiaSuOnline.Web/App_Data/mail/`, kiểm tra đúng người nhận rồi mở link. Đây là email thử trên máy, không đến Gmail thật. Các tệp thư chứa token nên không được commit.
 
-Trang chi tiết đã có nút Đặt lịch và trang khung giờ; **chưa tạo booking trong Sprint 1**. Khi lịch/đánh giá chưa có dữ liệu, trang hiển thị trạng thái rỗng; tạo lịch và đánh giá thuộc sprint sau.
+Sprint 2 đã nối trang chi tiết với lịch rảnh và tạo booking thật. Đánh giá mới vẫn thuộc US15 mở rộng; khi chưa có đánh giá, trang hiển thị trạng thái chưa có dữ liệu.
 
 ## 5. Kiểm thử
 
@@ -185,11 +186,11 @@ Bộ kiểm thử dùng SQLite in-memory và email giả lập, không xóa data
 | Giai đoạn | Kế hoạch | Phạm vi | Trạng thái |
 | --- | --- | --- | --- |
 | Sprint 1 | 26/10–13/11/2026 | US01, US02, US03, US04, US06, US19 | Đã triển khai và kiểm chứng email thật; chờ nhóm nghiệm thu cuối |
-| Sprint 2 | 16/11–04/12/2026 | US05, US07, US08, US09: tìm kiếm/lọc, lịch rảnh, đặt và xác nhận | Chưa triển khai nghiệp vụ; mục tiêu phát hành V1.0 |
+| Sprint 2 | 16/11–04/12/2026 | US05, US07, US08, US09: tìm kiếm/lọc, lịch rảnh, đặt và xác nhận | Đã triển khai, kiểm thử và đo hiệu năng; chờ nhóm nghiệm thu V1.0 |
 | Sprint 3 | 07/12–25/12/2026 | US12, US14, US20: thanh toán sandbox, video, UAT/triển khai | Chưa triển khai; mục tiêu phát hành V2.0 |
 | Mở rộng | Chưa cam kết | US10, US11, US13, US15–US18 | Chỉ làm khi được nhóm đưa vào phạm vi |
 
-### Kết quả và việc còn chờ
+### Kết quả Sprint 1 và việc còn chờ
 
 - Đã áp dụng migration vào `LOQ\SQLEXPRESS / GiaSuOnlineGS`; đã seed ba vai trò và sáu môn học.
 - Luồng SQL Server thật đã chạy với **Gmail SMTP**: đăng ký tài khoản thử riêng → người dùng mở email xác nhận → đăng nhập → tạo hồ sơ → admin duyệt → khách xem. Người dùng đã nhận email duyệt, mở email đặt lại mật khẩu, đổi mật khẩu và đăng nhập lại thành công.
@@ -239,6 +240,123 @@ Nguồn: `docs/Nhom8_Scrum_GiaSuOnline.xlsx`, sheet `Sprint backlog 1`, tổng 1
 ### Lưu ý kế hoạch
 
 Hàng ngày trong sheet Sprint backlog 1 có ô công thức cached `#REF!`; cần kiểm tra công thức trước khi dùng biểu đồ burndown làm minh chứng. US06 có phần đọc lịch/đánh giá trong khi tạo lịch/đánh giá nằm ở sprint sau: nhóm cần nghiệm thu rõ trạng thái chưa có dữ liệu thay vì xem đây là chức năng booking/đánh giá đã hoàn thành.
+
+<a id="sprint2"></a>
+## Sprint 2 – tìm kiếm, lịch rảnh và đặt lịch
+
+Triển khai và kiểm chứng kỹ thuật trong **14–15/11/2026**, trước lịch kế hoạch **16/11–04/12/2026** trong workbook. Phạm vi: **US05, US07, US08, US09 – 22 task, 116 giờ dự kiến**. Không ghi giờ thực tế hoặc đổi trạng thái workbook thay nhóm.
+
+**Kết quả:** build không lỗi/cảnh báo; hồi quy **38/38 đạt, không bỏ qua**, gồm kiểm thử thực trên SQL Server. Luồng HTTP qua HTTPS đã đạt: đăng ký/xác nhận thử → duyệt gia sư → thêm lịch → chặn chồng lấn → học viên đặt → gia sư xác nhận → học viên xem kết quả. Mục tiêu chức năng của V1.0 đã có bản chạy để nhóm nghiệm thu; chưa tự gắn tag/phát hành chính thức hoặc thay biên bản review của nhóm.
+
+### Chạy bản đã cập nhật trên máy đang có Sprint 1
+
+```powershell
+# Dừng bản web hiện tại; nếu chạy trong terminal khác thì Ctrl+C tại đó.
+powershell -ExecutionPolicy Bypass -File .\scripts\Stop-Preview.ps1
+
+# Tải thư viện, build và áp dụng migration mới; giữ tài khoản/hồ sơ SQL Server cũ.
+powershell -ExecutionPolicy Bypass -File .\scripts\Setup.ps1
+
+# Dùng cấu hình Gmail đã lưu trên máy, hoặc Pickup nếu chưa cấu hình.
+powershell -ExecutionPolicy Bypass -File .\scripts\Start.ps1
+```
+
+Migration `20261114160003_SprintTwoScheduling` đã áp dụng vào `GiaSuOnlineGS` trên máy nhóm. Hồ sơ cũ mặc định ngôn ngữ Tiếng Việt và có thể được gia sư chỉnh lại. Không dùng EnsureDeleted/khởi tạo lại database chính. SQLite demo chuyển sang tệp `App_Data/gs-dev-v1.db`; tệp demo Sprint 1 cũ được giữ riêng, không tự chuyển dữ liệu.
+
+### Thử theo vai trò
+
+1. **Gia sư đã duyệt:** vào **Lịch rảnh → Thêm khung giờ**; nhập giờ Việt Nam (UTC+7). Chọn tuần/tháng/danh sách; điện thoại mặc định danh sách tuần. Các khung giờ không được chồng lấn; khung đã đặt không sửa/xóa được.
+2. **Học viên/khách:** vào **Tìm gia sư**; lọc theo từ khóa, môn, giá, ngôn ngữ, đánh giá; đổi thứ tự và chuyển trang (10 hồ sơ/trang).
+3. **Học viên:** mở hồ sơ → **Đặt lịch** → chọn tuần và slot trống → xem thời gian/học phí/tổng tiền → gửi yêu cầu. Nếu chưa đăng nhập, hệ thống yêu cầu đăng nhập; gia sư/Admin không có quyền đặt thay học viên.
+4. **Gia sư:** vào **Yêu cầu học** → chấp nhận hoặc từ chối. Học viên xem ở **Lịch đã đặt**. Chỉ gia sư của booking và học viên đã đặt xem được chi tiết.
+5. **Hết hạn:** yêu cầu chưa phản hồi tự hết hạn sau 24 giờ; nếu đến giờ học trước mốc đó, cũng không được xác nhận nữa. Tác vụ nền quét mỗi 30 giây; khi web tắt, tác vụ tạm dừng và xử lý bù khi khởi động. Không cần chờ thật 24 giờ để kiểm thử: bộ test có đồng hồ giả lập.
+
+Giá/thời gian được chốt tại lúc đặt, không tin số tiền gửi từ trình duyệt. Gia sư đổi học phí sau đó không làm đổi booking đã tạo. Thanh toán, phòng video, hủy/đổi lịch theo yêu cầu người dùng và đánh giá mới vẫn ngoài phạm vi Sprint 2.
+
+### Email đặt lịch
+
+Email yêu cầu mới gửi cho gia sư; email kết quả/hết hạn gửi cho học viên. Thư lưu trong `BookingEmails` cùng giao dịch booking rồi tác vụ nền gửi bằng EmailSender đã có. Có retry khi SMTP lỗi và cơ chế nhận việc riêng để hai tiến trình không cùng gửi một thư. Nếu tiến trình bị dừng đúng sau khi SMTP nhận thư nhưng trước khi ghi nhận thành công, thư có thể được gửi lại; đây không phải cam kết giao email đúng một lần.
+
+Bài kiểm chứng Sprint 2 dùng **Pickup** trên database demo: đã gửi thành công **2/2 thông báo**, không còn thư chờ. Không gửi email nghiệp vụ mới ra Gmail trong lần triển khai này. Gmail SMTP thật đã được kiểm chứng ở Sprint 1; hãy thử lại theo chính sách/tài khoản của nhóm khi nghiệm thu người dùng thật.
+
+### Database demo và đo hiệu năng
+
+```powershell
+# Dùng database GiaSuOnlineGS_Demo riêng; không thêm 500 hồ sơ giả vào dữ liệu thật.
+powershell -ExecutionPolicy Bypass -File .\scripts\Benchmark-Search.ps1
+
+# Mở bản demo, toàn bộ email lưu trên máy; lần đầu có thể tự tạo admin demo.
+powershell -ExecutionPolicy Bypass -File .\scripts\Start-Demo.ps1 -CreateAdmin
+
+# Máy khác: thêm -SqlServer 'TENMAY\SQLEXPRESS' cho các lệnh demo.
+```
+
+Dừng bản web đang dùng cổng 7043 trước khi mở bản demo. Sau demo, Ctrl+C và chạy `Start.ps1` để trở về database chính. 500 hồ sơ seed chỉ là dữ liệu giả, không có mật khẩu đăng nhập; tạo Student/Tutor bằng form và xác nhận email Pickup để demo nghiệp vụ. Nếu nhóm thêm tài khoản/hồ sơ thử, tổng hồ sơ demo có thể lớn hơn 500; công cụ luôn in số lượng thực tế.
+
+| Phép đo trên 500 hồ sơ (máy nhóm) | Kết quả |
+| --- | --- |
+| SQL/EF, lần truy vấn đầu | 537.5 ms |
+| SQL/EF, chậm nhất trong 5 lần sau | 20.7 ms |
+| HTTP qua HTTPS, chậm nhất trong 6 lần lọc kết hợp | 445.8 ms |
+| Mục tiêu workbook | Không quá 2.000 ms |
+
+Đây là phép đo cục bộ trước khi thêm hồ sơ demo nghiệp vụ, không phải cam kết tốc độ Internet hoặc kiểm thử tải nhiều người dùng đồng thời.
+
+### Kiểm thử hồi quy
+
+```powershell
+# Có SQL Server Express trên máy nhóm: chạy đủ 38 test.
+powershell -ExecutionPolicy Bypass -File .\scripts\Test.ps1 -SqlServer
+
+# Máy SQL Server khác:
+powershell -ExecutionPolicy Bypass -File .\scripts\Test.ps1 -SqlServer -SqlServerName 'TENMAY\SQLEXPRESS'
+
+# Không có SQL Server: chạy SQLite và các kiểm thử còn lại; hai test SQL Server được báo Skip.
+powershell -ExecutionPolicy Bypass -File .\scripts\Test.ps1
+```
+
+Test SQL Server chỉ tạo/xóa database ngẫu nhiên có tiền tố `GiaSuGS_Test_`, không xóa database chính hoặc demo. Đã kiểm tra: hai học viên tranh slot, hai thao tác thêm lịch chồng lấn, race xác nhận/hết hạn, giữ dữ liệu khi migrate từ Sprint 1, hai tiến trình gửi mail, retry SMTP, quyền sở hữu/CSRF và dữ liệu học phí. Xem [báo cáo Sprint 2](docs/testing/SPRINT_2_RESULTS.md).
+
+### Đối chiếu 22 task Sprint 2
+
+| Task | Công việc | Trạng thái | Bằng chứng / giới hạn |
+| --- | --- | --- | --- |
+| T05.1 | Truy vấn tìm kiếm và lọc | Đã triển khai/kiểm thử | Kết hợp từ khóa, môn, giá, ngôn ngữ và điểm đánh giá; sắp giá/đánh giá, chỉ hiện hồ sơ đã duyệt. |
+| T05.2 | Tối ưu CSDL và phân trang | Đã triển khai/đo SQL Server | Index tìm kiếm và phân trang 10 hồ sơ; 500 hồ sơ giả trong GiaSuOnlineGS_Demo, không vào database chính. |
+| T05.3 | Giao diện trang tìm kiếm | Đã triển khai/kiểm tra trình duyệt | Sidebar, thẻ gia sư, giữ bộ lọc khi chuyển trang, trạng thái rỗng/đang tải; desktop và mobile đã xem. |
+| T05.4 | Gợi ý từ khóa tìm kiếm | Đã triển khai/kiểm thử | API gợi ý tối đa 8 tên gia sư/môn có hồ sơ đã duyệt; datalist, debounce và hủy yêu cầu cũ. |
+| T05.5 | Kiểm thử chức năng và hiệu năng | Đã kiểm thử/đạt mục tiêu | SQL cold 537.5 ms, warm max 20.7 ms; HTTP max 445.8 ms trong bài đo 500 hồ sơ. Không cam kết tốc độ trên mọi máy. |
+| T05.6 | Review code & merge | Build/test đạt; chờ review nhóm | Theo quy trình main đã chọn; không tự tạo bằng chứng review của thành viên khác hoặc merge vào develop. |
+| T07.1 | Thiết kế CSDL lịch rảnh | Đã triển khai/migrate | AvailabilitySlot có UTC, cờ xóa mềm, revision và index; nâng cấp giữ slot Sprint 1. |
+| T07.2 | CRUD khung giờ rảnh + chống chồng lấn | Đã triển khai/kiểm thử | Thêm/sửa/xóa mềm; khóa lịch theo gia sư trong transaction để chặn chồng lấn và chặn sửa/xóa slot đã đặt. |
+| T07.3 | Giao diện lịch tuần của gia sư | Đã triển khai/kiểm tra trình duyệt | FullCalendar 6.1.22 miễn phí, tiếng Việt; tuần/tháng/danh sách, màu khác cho slot đã đặt; mobile dùng danh sách tuần. |
+| T07.4 | Xử lý múi giờ và định dạng | Đã triển khai/kiểm thử | Lưu UTC, form/hiển thị cố định UTC+7, không phụ thuộc múi giờ trình duyệt; lịch hỗ trợ đủ 24 giờ. |
+| T07.5 | Kiểm thử lịch rảnh | Đã kiểm thử | Chồng lấn, quá khứ, chủ sở hữu, revision cũ, giờ UTC và edit/delete slot đã đặt. |
+| T07.6 | Review code và chuẩn bị demo Sprint 2 | Demo đã chuẩn bị; chờ review nhóm | Database demo riêng, Start-Demo.ps1, hướng dẫn tái hiện, ảnh desktop/mobile và luồng đã xác nhận. |
+| T08.1 | Thiết kế CSDL đặt lịch | Đã triển khai/migrate | Bookings: Pending/Confirmed/Rejected/Expired; FK, học phí/thời gian snapshot và unique index cho slot đang giữ. |
+| T08.2 | Logic đặt lịch và chống đặt trùng | Đã triển khai/kiểm thử đồng thời | Transaction + khóa ghi cùng hồ sơ gia sư + revision + unique filtered index. Hai kết nối SQL Server tranh slot: chỉ một thành công. |
+| T08.3 | Giao diện chọn khung giờ và xác nhận | Đã triển khai/kiểm tra HTTP và trình duyệt | Chọn tuần/slot → xem thời gian, học phí, tổng tiền → POST xác nhận; giá tính ở server; lỗi thân thiện khi slot/giá vừa đổi. |
+| T08.4 | Email thông báo yêu cầu cho gia sư | Đã triển khai; Pickup đã nhận | Email yêu cầu cho gia sư qua hàng đợi lưu cùng transaction; SMTP lỗi được retry, không hủy booking đã lưu. |
+| T08.5 | Kiểm thử đặt lịch, kể cả đồng thời | Đã kiểm thử | Đặt đồng thời trên SQLite và SQL Server, slot quá khứ, chưa đăng nhập, sửa StudentId, gửi lại form, snapshot học phí. |
+| T08.6 | Review code & merge | Build/test đạt; chờ review nhóm | Chưa tự ghi nhận review độc lập hoặc gắn tag phát hành v1.0 trước nghiệm thu. |
+| T09.1 | Giao diện danh sách yêu cầu của gia sư | Đã triển khai/kiểm tra trình duyệt | Danh sách yêu cầu đúng gia sư, nút chấp nhận/từ chối cho Pending; trang chi tiết chỉ hai bên xem. |
+| T09.2 | Chấp nhận / từ chối và cập nhật trạng thái | Đã triển khai/kiểm thử | Chấp nhận giữ slot; từ chối mở slot và giữ lịch sử. Email kết quả qua outbox; request cũ/đã xử lý không đổi trạng thái lại. |
+| T09.3 | Tự hủy yêu cầu quá 24 giờ | Đã triển khai/kiểm thử | HostedService quét mỗi 30 giây; hết 24 giờ hoặc đã đến giờ học thì Expired, mở slot và thông báo. Tác vụ chạy lại khi web khởi động. |
+| T09.4 | Kiểm thử xác nhận/từ chối | Đã kiểm thử | Xác nhận/từ chối, đặt lại sau từ chối, biên 24 giờ, đến giờ học sớm hơn 24 giờ và race xác nhận/hết hạn. |
+
+### Minh chứng giao diện
+
+Ảnh chụp từ **database Demo**; tên, học phí, lịch và đánh giá trong ảnh là dữ liệu thử.
+
+![Tìm kiếm gia sư trên máy tính](docs/evidence/sprint-02/search-desktop.jpg)
+
+[Ảnh tìm kiếm mobile](docs/evidence/sprint-02/search-mobile.jpg) · [Lịch tuần desktop](docs/evidence/sprint-02/calendar-desktop.jpg) · [Lịch mobile](docs/evidence/sprint-02/calendar-mobile.jpg) · [Booking đã xác nhận](docs/evidence/sprint-02/booking-confirmed.jpg).
+
+### Việc nhóm cần nghiệm thu
+
+- Thành viên khác review mã và xác nhận tiêu chí chấp nhận; việc commit vào main không thay review độc lập.
+- Thử các tài khoản/thiết bị thật và xác nhận email đặt lịch qua SMTP nếu nhóm cần bằng chứng gửi ra ngoài cho Sprint 2.
+- Sprint Review/Retrospective, cập nhật workbook và quyết định phát hành/tag V1.0 do nhóm thực hiện. Bản workbook đang sửa của người dùng được giữ nguyên và không đưa vào commit mã.
 
 ## 7. Tổ chức repository và quy trình làm việc
 

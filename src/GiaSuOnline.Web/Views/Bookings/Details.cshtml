@@ -1,0 +1,5 @@
+@model Booking
+@{ViewData["Title"]="Chi tiết yêu cầu";}
+<section class="detail-panel"><p class="eyebrow">YÊU CẦU #@Model.Id</p><h1>@VietnamTime.Status(Model.Status)</h1><h2>@Model.TutorProfile.User.FullName</h2><p>Học viên: @Model.Student.FullName</p><p>Bắt đầu: @VietnamTime.Format(Model.StartsAtUtc)</p><p>Kết thúc: @VietnamTime.Format(Model.EndsAtUtc)</p><p>Học phí lúc đặt: @Model.HourlyRate.ToString("N0") đ/giờ</p><p>Tổng học phí: <strong>@Model.Amount.ToString("N0") đ</strong></p><p>Ngày yêu cầu: @VietnamTime.Format(Model.CreatedAtUtc)</p>
+@if(Model.Status==BookingStatus.Pending){<p>Hạn phản hồi: @VietnamTime.Format(Model.ExpiresAtUtc). Nếu giờ học đến trước hạn này, yêu cầu cũng hết hiệu lực.</p>}
+@if(User.IsInRole("Tutor")){<a asp-action="Requests">Quay lại yêu cầu học</a>}else{<a asp-action="Mine">Quay lại lịch đã đặt</a>}</section>

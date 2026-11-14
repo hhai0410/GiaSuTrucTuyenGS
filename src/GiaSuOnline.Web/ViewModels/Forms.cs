@@ -26,6 +26,7 @@ public class ResetForm
 }
 public class ProfileForm
 {
+    [Required, RegularExpression("^(vi|en|fr|ja|ko|zh)$"), Display(Name="Ngôn ngữ giảng dạy")] public string TeachingLanguage { get; set; } = "vi";
     [Required, StringLength(3000, MinimumLength=20), Display(Name="Giới thiệu (20–3000 ký tự)")] public string Introduction { get; set; } = "";
     [Range(typeof(decimal), "1", "100000000"), Display(Name="Học phí / giờ (VNĐ)")] public decimal HourlyRate { get; set; }
     [Range(0, 70), Display(Name="Số năm kinh nghiệm")] public int ExperienceYears { get; set; }
@@ -44,4 +45,4 @@ public class ModerationForm
     public bool Approve { get; set; }
     [StringLength(1000), Display(Name="Lý do từ chối")] public string? Reason { get; set; }
 }
-public record TutorDetail(TutorProfile Profile, List<TutorReview> Reviews, List<AvailabilitySlot> Slots);
+public record TutorDetail(TutorProfile Profile, List<TutorReview> Reviews, List<AvailabilitySlot> Slots, DateOnly? Week = null);

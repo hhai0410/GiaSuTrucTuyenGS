@@ -1,0 +1,4 @@
+"use strict";
+const searchForm=document.querySelector("[data-search-form]");
+if(searchForm){searchForm.addEventListener("submit",()=>{searchForm.querySelector("[data-loading]").hidden=false;});const input=document.querySelector("[data-suggest-url]"),list=document.querySelector("#suggestions");let timer,controller;
+input.addEventListener("input",()=>{clearTimeout(timer);controller?.abort();list.replaceChildren();const text=input.value.trim();if(text.length<2)return;timer=setTimeout(async()=>{controller=new AbortController();try{const url=new URL(input.dataset.suggestUrl,location.origin);url.searchParams.set("q",text);const response=await fetch(url,{signal:controller.signal});if(!response.ok)return;const items=await response.json();if(input.value.trim()!==text)return;list.replaceChildren(...items.map(name=>{const option=document.createElement("option");option.value=name;return option;}));}catch(error){if(error.name!=="AbortError")list.replaceChildren();}},250);});}

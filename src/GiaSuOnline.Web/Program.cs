@@ -7,6 +7,8 @@ using GiaSuOnline.Web.Integrations.Email;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using GiaSuOnline.Web.Jobs;
+using System.Security.Cryptography;
 
 var builder = WebApplication.CreateBuilder(args);
 Directory.CreateDirectory(Path.Combine(builder.Environment.ContentRootPath, "App_Data"));
@@ -36,9 +38,39 @@ builder.Services.ConfigureApplicationCookie(o =>
 builder.Services.AddControllersWithViews(o => o.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<UploadStore>(); builder.Services.AddScoped<ProfileService>();
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddScoped<TutorSearchService>();
+builder.Services.AddScoped<SchedulingService>();
+builder.Services.AddScoped<BookingEmailDispatcher>();
+if (!builder.Environment.IsEnvironment("Testing") && builder.Configuration.GetValue("Jobs:Enabled", true))
+    builder.Services.AddHostedService<BookingMaintenance>();
 builder.Services.AddHsts(o => { o.MaxAge = TimeSpan.FromDays(365); o.IncludeSubDomains = true; });
 builder.Services.AddHttpsRedirection(o => { o.HttpsPort = 7043; o.RedirectStatusCode = 308; });
 var app = builder.Build();
+if (builder.Configuration.GetValue<bool>("SearchBenchmark"))
+{
+    if (!app.Environment.IsDevelopment()) throw new InvalidOperationException("Benchmark chỉ chạy trong Development.");
+    var connection = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(builder.Configuration.GetConnectionString("DefaultConnection"));
+    if (builder.Configuration["DatabaseProvider"] != "SqlServer" || !connection.InitialCatalog.EndsWith("_Demo", StringComparison.Ordinal))
+        throw new InvalidOperationException("Benchmark chỉ được seed trong database SQL Server có tên kết thúc _Demo.");
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await db.Database.MigrateAsync();
+    await DatabaseSeed.RunAsync(scope.ServiceProvider, new ConfigurationBuilder().Build());
+    await SearchDemoSeed.RunAsync(db);
+    var search = scope.ServiceProvider.GetRequiredService<TutorSearchService>();
+    var subjectId = await db.Subjects.OrderBy(x => x.Id).Select(x => x.Id).FirstAsync();
+    var timings = new List<double>();
+    for (var i = 0; i < 6; i++)
+    {
+        var timer = System.Diagnostics.Stopwatch.StartNew();
+        var result = await search.SearchAsync(new() { SubjectId = subjectId, MinPrice = 100000, MaxPrice = 500000, Language = "vi", MinRating = 3, Sort = "price" });
+        timings.Add(timer.Elapsed.TotalMilliseconds);
+        if (result.Items.Count > 10 || result.Total == 0) throw new InvalidOperationException("Benchmark không có kết quả hợp lệ.");
+    }
+    Console.WriteLine("SEARCH_BENCHMARK " + System.Text.Json.JsonSerializer.Serialize(new { Profiles = await db.TutorProfiles.CountAsync(), ColdMs = timings[0], WarmMaxMs = timings.Skip(1).Max(), WarmMeanMs = timings.Skip(1).Average(), TargetMs = 2000 }));
+    return;
+}
 // Kiểm tra SMTP theo yêu cầu rõ ràng từ dòng lệnh, không mở endpoint gửi thư công khai.
 if (builder.Configuration.GetValue<bool>("SmtpCheck"))
 {
@@ -70,9 +102,11 @@ if (!app.Environment.IsDevelopment()) app.UseHsts();
 app.UseHttpsRedirection();
 app.Use(async (ctx, next) =>
 {
+    var nonce = Convert.ToBase64String(RandomNumberGenerator.GetBytes(16));
+    ctx.Items["CspNonce"] = nonce;
     ctx.Response.Headers.XContentTypeOptions = "nosniff";
     ctx.Response.Headers["Referrer-Policy"] = "same-origin";
-    ctx.Response.Headers["Content-Security-Policy"] = "default-src 'self'; img-src 'self' blob: data:; style-src 'self'; script-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'";
+    ctx.Response.Headers["Content-Security-Policy"] = $"default-src 'self'; img-src 'self' blob: data:; font-src 'self' data:; style-src 'self' 'nonce-{nonce}'; script-src 'self' 'nonce-{nonce}'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'";
     ctx.Response.Headers.CacheControl = "no-store";
     await next();
 });

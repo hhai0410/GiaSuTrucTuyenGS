@@ -24,6 +24,8 @@ public class TutorProfile
     public string? CertificateContentType { get; set; }
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
     public string Revision { get; set; } = Guid.NewGuid().ToString("N");
+    [MaxLength(10)] public string TeachingLanguage { get; set; } = "vi";
+    public long ScheduleRevision { get; set; }
     public List<TutorSubject> Subjects { get; set; } = [];
     public List<TutorReview> Reviews { get; set; } = [];
     public List<AvailabilitySlot> Availability { get; set; } = [];
@@ -40,7 +42,7 @@ public class TutorSubject
     public int SubjectId { get; set; }
     public Subject Subject { get; set; } = null!;
 }
-// Chỉ đọc dữ liệu tóm tắt cho US06. Tạo lịch/đánh giá thuộc sprint sau.
+// Đánh giá hiện chỉ được đọc/tìm kiếm; tạo đánh giá thuộc US15 mở rộng.
 public class TutorReview
 {
     public int Id { get; set; }
@@ -56,4 +58,7 @@ public class AvailabilitySlot
     public DateTime StartsAtUtc { get; set; }
     public DateTime EndsAtUtc { get; set; }
     public bool IsBooked { get; set; }
+    public bool IsDeleted { get; set; }
+    [MaxLength(32)] public string Revision { get; set; } = Guid.NewGuid().ToString("N");
+    public TutorProfile TutorProfile { get; set; } = null!;
 }

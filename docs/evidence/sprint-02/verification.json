@@ -1,0 +1,70 @@
+{
+  "date": "2026-11-14",
+  "timezone": "Asia/Bangkok",
+  "automated": {
+    "passed": 38,
+    "total": 38,
+    "failed": 0,
+    "skipped": 0
+  },
+  "benchmark": {
+    "date": "2026-11-14",
+    "database": "GiaSuOnlineGS_Demo",
+    "profiles": 500,
+    "httpMilliseconds": [
+      445.7901999994647,
+      41.7104000080144,
+      36.94649999670219,
+      29.67779999016784,
+      36.90500000084285,
+      36.02050000336021
+    ],
+    "httpMaxMs": 445.7901999994647,
+    "sqlColdMs": 537.5256,
+    "sqlWarmMaxMs": 20.6989,
+    "sqlWarmMeanMs": 15.77,
+    "targetMs": 2000
+  },
+  "httpWorkflow": {
+    "date": "2026-11-14",
+    "database": "GiaSuOnlineGS_Demo",
+    "email": "Pickup only",
+    "result": "PASS",
+    "profileId": 501,
+    "slotId": 1,
+    "bookingId": 1,
+    "checks": [
+      "registration and pickup confirmation",
+      "tutor profile approved",
+      "add future slot",
+      "reject overlapping slot",
+      "weekly slot selection",
+      "create pending booking",
+      "tutor confirms",
+      "student sees confirmed booking",
+      "reject editing reserved slot",
+      "reject double submit"
+    ]
+  },
+  "backgroundEmail": {
+    "sentToPickup": 2,
+    "pending": 0,
+    "externalEmailsSent": 0
+  },
+  "migration": {
+    "name": "20261114160003_SprintTwoScheduling",
+    "appliedTo": "GiaSuOnlineGS",
+    "upgradeTest": "existing profile and slot preserved"
+  },
+  "browser": {
+    "desktop": "search filters, pagination, weekly calendar, confirmed booking",
+    "mobile": "390 x 844 viewport: search and weekly list; no horizontal page overflow",
+    "consoleErrors": 0
+  },
+  "notClaimed": [
+    "independent team code review",
+    "Sprint Review/Retrospective meeting",
+    "new booking emails delivered through real Gmail",
+    "official v1.0 release approval"
+  ]
+}

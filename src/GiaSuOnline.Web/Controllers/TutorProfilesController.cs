@@ -16,6 +16,7 @@ public class TutorProfilesController(ProfileService service, ApplicationDbContex
     {
         var p = await service.Profiles.AsNoTracking().SingleOrDefaultAsync(x => x.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier));
         var form = p == null ? new ProfileForm() : new ProfileForm { Introduction=p.Introduction, HourlyRate=p.HourlyRate, ExperienceYears=p.ExperienceYears, SubjectIds=p.Subjects.Select(x => x.SubjectId).ToArray(), Revision=p.Revision, HasPhoto=p.PhotoKey!=null, HasCertificate=p.CertificateKey!=null };
+        if (p != null) form.TeachingLanguage = p.TeachingLanguage;
         await Options(form); return View(form);
     }
     [HttpPost, Authorize(Roles="Tutor"), RequestSizeLimit(12 * 1024 * 1024)] public async Task<IActionResult> Edit(ProfileForm form)
@@ -52,6 +53,16 @@ public class TutorProfilesController(ProfileService service, ApplicationDbContex
         var path=uploads.PathFor(p.CertificateKey);
         return System.IO.File.Exists(path) ? PhysicalFile(path,p.CertificateContentType!, "chung-chi"+Path.GetExtension(path)) : NotFound();
     }
-    [HttpGet, AllowAnonymous] public async Task<IActionResult> Booking(int id)
-    { var d=await service.PublicDetailAsync(id); return d == null ? NotFound() : View(d); }
+    [HttpGet, AllowAnonymous] public async Task<IActionResult> Booking(int id, DateOnly? week)
+    {
+        if (!ModelState.IsValid || week?.Year is < 2000 or > 2100) return BadRequest();
+        var d = await service.PublicDetailAsync(id);
+        if (d == null) return NotFound();
+        var now = HttpContext.RequestServices.GetRequiredService<TimeProvider>().GetUtcNow().UtcDateTime;
+        var day = week ?? VietnamTime.Today(now);
+        var monday = day.AddDays(-(((int)day.DayOfWeek + 6) % 7));
+        var start = VietnamTime.Utc(monday.ToDateTime(TimeOnly.MinValue)); var end = start.AddDays(7);
+        var slots = await db.AvailabilitySlots.AsNoTracking().Where(x => x.TutorProfileId == id && !x.IsDeleted && !x.IsBooked && x.StartsAtUtc >= start && x.StartsAtUtc < end && x.StartsAtUtc > now).OrderBy(x => x.StartsAtUtc).ToListAsync();
+        return View(d with { Slots = slots, Week = monday });
+    }
 }

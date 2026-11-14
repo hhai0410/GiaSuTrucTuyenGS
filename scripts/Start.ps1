@@ -11,7 +11,7 @@ try {
     $env:ASPNETCORE_ENVIRONMENT = 'Development'
     if ($Sqlite) {
         $env:DatabaseProvider = 'Sqlite'
-        $env:ConnectionStrings__DefaultConnection = 'Data Source=App_Data/gs-dev.db'
+        $env:ConnectionStrings__DefaultConnection = 'Data Source=App_Data/gs-dev-v1.db'
     }
     if ($CreateAdmin) {
         $env:SeedAdmin__Email = Read-Host 'Email quản trị mới (không dùng email đã tự đăng ký)'

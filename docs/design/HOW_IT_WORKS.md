@@ -1,5 +1,7 @@
 # Các phần liên kết với nhau như thế nào?
 
+Tài liệu này giải thích nền tảng Sprint 1. Sprint 2 đã bổ sung tìm kiếm/lịch/booking: xem [README hiện tại](../../README.md#sprint2) và [thiết kế Sprint 2](SPRINT_2_DESIGN.md).
+
 Bạn không cần dùng tất cả ngôn ngữ đã học trong một dự án. Dự án này chọn C# cho máy chủ vì backlog đã dùng ASP.NET Core Identity/EF Core. C# có class, method, interface, async khá gần Java; kiến thức HTML/CSS/JS và SQL của bạn được dùng trực tiếp.
 
 ```mermaid
